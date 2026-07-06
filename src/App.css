@@ -193,3 +193,34 @@ td {
   .card { padding: 1.2rem; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Add these styles to your existing App.css */
+
+.user-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.2rem 0.8rem;
+  border-radius: 40px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 0.8rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Mobile responsive update */
+@media (max-width: 640px) {
+  .user-badge {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.6rem;
+  }
+  
+  .nav-brand {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

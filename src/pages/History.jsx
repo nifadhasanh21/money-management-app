@@ -1,3 +1,4 @@
+const userName = localStorage.getItem('money_manager_user') || 'User';
 import React, { useState, useMemo } from 'react';
 
 export default function History({ transactions, onDelete }) {

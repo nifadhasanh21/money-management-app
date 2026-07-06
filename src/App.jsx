@@ -5,23 +5,34 @@ import AddMoney from './pages/AddMoney';
 import AddExpense from './pages/AddExpense';
 import History from './pages/History';
 import Statistics from './pages/Statistics';
+import Welcome from './pages/Welcome';
 import { getTransactions, addTransaction, deleteTransaction } from './supabase';
 import './App.css';
 
 function App() {
+  const [userName, setUserName] = useState(() => {
+    return localStorage.getItem('money_manager_user') || '';
+  });
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Load transactions from Supabase on mount
   useEffect(() => {
-    loadTransactions();
-  }, []);
+    if (userName) {
+      loadTransactions();
+    }
+  }, [userName]);
 
   const loadTransactions = async () => {
     setLoading(true);
     const data = await getTransactions();
     setTransactions(data);
     setLoading(false);
+  };
+
+  const handleSetUser = (name) => {
+    localStorage.setItem('money_manager_user', name);
+    setUserName(name);
   };
 
   const handleAddTransaction = async (tx) => {
@@ -45,6 +56,12 @@ function App() {
     }
   };
 
+  // If no user, show welcome screen
+  if (!userName) {
+    return <Welcome onSetUser={handleSetUser} />;
+  }
+
+  // Loading state
   if (loading) {
     return (
       <div style={{ 
@@ -64,13 +81,28 @@ function App() {
     <BrowserRouter>
       <div className="app-container">
         <nav className="navbar">
-          <div className="nav-brand">💰 Money Manager</div>
+          <div className="nav-brand">
+            💰 Money Manager
+            <span className="user-badge">👋 {userName}</span>
+          </div>
           <div className="nav-links">
             <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>Dashboard</NavLink>
             <NavLink to="/add-money" className={({ isActive }) => isActive ? 'active' : ''}>Add Money</NavLink>
             <NavLink to="/add-expense" className={({ isActive }) => isActive ? 'active' : ''}>Add Expense</NavLink>
             <NavLink to="/history" className={({ isActive }) => isActive ? 'active' : ''}>History</NavLink>
             <NavLink to="/statistics" className={({ isActive }) => isActive ? 'active' : ''}>Statistics</NavLink>
+            <button 
+              className="btn btn-outline" 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to logout?')) {
+                  localStorage.removeItem('money_manager_user');
+                  setUserName('');
+                }
+              }}
+              style={{ padding: '0.3rem 0.8rem', fontSize: '0.8rem' }}
+            >
+              Logout
+            </button>
           </div>
         </nav>
         <main>

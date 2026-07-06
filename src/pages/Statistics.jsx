@@ -1,3 +1,4 @@
+const userName = localStorage.getItem('money_manager_user') || 'User';
 import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getBalance, getTotalIncome, getTotalExpense } from '../utils/helpers';
