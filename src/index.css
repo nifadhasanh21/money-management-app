@@ -1,0 +1,17 @@
+:root {
+  --primary: #2a7de1;
+  --primary-light: #eaf1fd;
+  --income: #22a67e;
+  --expense: #e25c5c;
+  --card-bg: #ffffff;
+  --shadow: 0 8px 20px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+  --radius: 20px;
+  --transition: 0.2s ease;
+}
+body {
+  background: #f4f7fc;
+  color: #1e2a3a;
+}
+a, button, input, select, textarea {
+  font: inherit;
+}
