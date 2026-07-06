@@ -5,23 +5,60 @@ import AddMoney from './pages/AddMoney';
 import AddExpense from './pages/AddExpense';
 import History from './pages/History';
 import Statistics from './pages/Statistics';
-import { getTransactions, saveTransactions } from './utils/storage';
+import { getTransactions, addTransaction, deleteTransaction } from './supabase';
 import './App.css';
 
 function App() {
-  const [transactions, setTransactions] = useState(() => getTransactions());
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Load transactions from Supabase on mount
   useEffect(() => {
-    saveTransactions(transactions);
-  }, [transactions]);
+    loadTransactions();
+  }, []);
 
-  const addTransaction = (tx) => {
-    setTransactions(prev => [tx, ...prev]);
+  const loadTransactions = async () => {
+    setLoading(true);
+    const data = await getTransactions();
+    setTransactions(data);
+    setLoading(false);
   };
 
-  const deleteTransaction = (id) => {
-    setTransactions(prev => prev.filter(t => t.id !== id));
+  const handleAddTransaction = async (tx) => {
+    try {
+      const newTx = await addTransaction(tx);
+      setTransactions(prev => [newTx, ...prev]);
+      return newTx;
+    } catch (error) {
+      alert('Failed to add transaction. Please try again.');
+      throw error;
+    }
   };
+
+  const handleDeleteTransaction = async (id) => {
+    try {
+      await deleteTransaction(id);
+      setTransactions(prev => prev.filter(t => t.id !== id));
+    } catch (error) {
+      alert('Failed to delete transaction. Please try again.');
+      throw error;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '1.2rem',
+        color: '#2a7de1'
+      }}>
+        Loading your transactions...
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>
@@ -39,9 +76,9 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Dashboard transactions={transactions} />} />
-            <Route path="/add-money" element={<AddMoney onAdd={addTransaction} />} />
-            <Route path="/add-expense" element={<AddExpense onAdd={addTransaction} />} />
-            <Route path="/history" element={<History transactions={transactions} onDelete={deleteTransaction} />} />
+            <Route path="/add-money" element={<AddMoney onAdd={handleAddTransaction} />} />
+            <Route path="/add-expense" element={<AddExpense onAdd={handleAddTransaction} />} />
+            <Route path="/history" element={<History transactions={transactions} onDelete={handleDeleteTransaction} />} />
             <Route path="/statistics" element={<Statistics transactions={transactions} />} />
           </Routes>
         </main>
