@@ -46,20 +46,3 @@ export const deleteTransaction = async (id) => {
   return id;
 };
 
-export const addTransaction = async (transaction) => {
-  const userName = localStorage.getItem('money_manager_user') || 'Anonymous';
-  const { data, error } = await supabase
-    .from('transactions')
-    .insert([{
-      ...transaction,
-      user_name: userName,
-      created_at: new Date().toISOString()
-    }])
-    .select();
-  
-  if (error) {
-    console.error('Error adding transaction:', error);
-    throw error;
-  }
-  return data[0];
-};
