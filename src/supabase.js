@@ -20,16 +20,18 @@ export const addTransaction = async (transaction) => {
   return data[0];
 };
 
-export const getTransactions = async () => {
+export const getTransactions = async (userName) => {
   const { data, error } = await supabase
-    .from('transactions')
-    .select('*')
-    .order('date', { ascending: false });
-  
+    .from("transactions")
+    .select("*")
+    .eq("user_name", userName)
+    .order("date", { ascending: false });
+
   if (error) {
-    console.error('Error getting transactions:', error);
+    console.error(error);
     return [];
   }
+
   return data;
 };
 

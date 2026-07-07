@@ -25,7 +25,7 @@ function App() {
 
   const loadTransactions = async () => {
     setLoading(true);
-    const data = await getTransactions();
+    const data = await getTransactions(userName);
     setTransactions(data);
     setLoading(false);
   };
@@ -36,15 +36,22 @@ function App() {
   };
 
   const handleAddTransaction = async (tx) => {
-    try {
-      const newTx = await addTransaction(tx);
-      setTransactions(prev => [newTx, ...prev]);
-      return newTx;
-    } catch (error) {
-      alert('Failed to add transaction. Please try again.');
-      throw error;
-    }
-  };
+  try {
+    const transaction = {
+      ...tx,
+      user_name: userName
+    };
+
+    const newTx = await addTransaction(transaction);
+
+    setTransactions(prev => [newTx, ...prev]);
+
+    return newTx;
+  } catch (error) {
+    alert("Failed to add transaction.");
+    throw error;
+  }
+};
 
   const handleDeleteTransaction = async (id) => {
     try {
